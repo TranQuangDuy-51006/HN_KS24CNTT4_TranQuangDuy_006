@@ -12,7 +12,6 @@ interface Message {
 }
 
 export default function FormAdd() {
-  const list = localStorage.getItem("list") || [];
   const [data, setData] = useState<DataUser>({
     name: "",
     money: 0,
@@ -22,26 +21,38 @@ export default function FormAdd() {
     name: "",
     money: "",
   });
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setData({ ...data, [name]: value });
+    setData((prev) => ({
+      ...prev,
+      [name]: name === "money" ? Number(value) : value,
+    }));
     setMessage({ name: "", money: "" });
   };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (data.name == "") {
+    if (data.name.trim() === "") {
       setMessage({ ...message, name: "Vui lòng nhập tên chủ hộ" });
       return;
     }
-    if (data.money <= 0) {
-      setMessage({ ...message, money: "Vui lòng nhập số tiền" });
+    if (data.money <= 0 || isNaN(data.money)) {
+      setMessage({ ...message, money: "Vui lòng nhập số tiền hợp lệ" });
       return;
     }
+    const list: DataUser[] = JSON.parse(localStorage.getItem("list") || "[]");
+    list.push(data);
     localStorage.setItem("list", JSON.stringify(list));
-    console.log(data);
+    setData({
+      name: "",
+      money: 0,
+      status: "Chưa thanh toán",
+    });
   };
+
   return (
     <form
       className="bg-white mt-5 shadow-2xs rounded-2xl p-5"
@@ -53,6 +64,7 @@ export default function FormAdd() {
           <input
             type="text"
             name="name"
+            value={data.name}
             className="border-2 p-2 rounded-2xl outline-0"
             placeholder="Tên chủ hộ"
             onChange={handleChange}
@@ -60,17 +72,17 @@ export default function FormAdd() {
         </div>
         <div>
           <input
-            type="text"
+            type="number"
             name="money"
+            value={data.money === 0 ? "" : data.money}
             className="border-2 p-2 rounded-2xl outline-0"
             placeholder="Số tiền"
             onChange={handleChange}
           />
         </div>
-
         <select
           name="status"
-          id=""
+          value={data.status}
           className="border-2 p-2 rounded-2xl outline-0"
           onChange={handleChange}
         >
