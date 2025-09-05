@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import FormAdd from "./FormAdd";
 import Table from "./Table";
@@ -10,12 +9,10 @@ interface DataUser {
 }
 
 export default function Manager() {
-  const [list, setList] = useState<DataUser[]>([]);
-
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("list") || "[]");
-    setList(stored);
-  }, []);
+  const [list, setList] = useState<DataUser[]>(() => {
+    const stored = localStorage.getItem("list");
+    return stored ? JSON.parse(stored) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem("list", JSON.stringify(list));
