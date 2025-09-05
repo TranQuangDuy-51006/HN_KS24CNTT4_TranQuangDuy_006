@@ -11,7 +11,13 @@ interface Message {
   money: string;
 }
 
-export default function FormAdd() {
+export default function FormAdd({
+  list,
+  setList,
+}: {
+  list: DataUser[];
+  setList: React.Dispatch<React.SetStateAction<DataUser[]>>;
+}) {
   const [data, setData] = useState<DataUser>({
     name: "",
     money: 0,
@@ -43,9 +49,9 @@ export default function FormAdd() {
       setMessage({ ...message, money: "Vui lòng nhập số tiền hợp lệ" });
       return;
     }
-    const list: DataUser[] = JSON.parse(localStorage.getItem("list") || "[]");
-    list.push(data);
-    localStorage.setItem("list", JSON.stringify(list));
+    const newList = [...list, data];
+    setList(newList);
+    localStorage.setItem("list", JSON.stringify(newList));
     setData({
       name: "",
       money: 0,
