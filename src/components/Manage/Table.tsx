@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 interface DataUser {
   name: string;
@@ -6,14 +6,13 @@ interface DataUser {
   status: "Đã thanh toán" | "Chưa thanh toán";
 }
 
-export default function Table() {
-  const [list, setList] = useState<DataUser[]>([]);
-
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("list") || "[]");
-    setList(stored);
-  }, []);
-
+export default function Table({
+  list,
+  setList,
+}: {
+  list: DataUser[];
+  setList: React.Dispatch<React.SetStateAction<DataUser[]>>;
+}) {
   const handleDelete = (index: number) => {
     const newList = [...list];
     newList.splice(index, 1);
