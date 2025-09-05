@@ -1,4 +1,4 @@
-// Manager.tsx
+
 import React, { useEffect, useState } from "react";
 import FormAdd from "./FormAdd";
 import Table from "./Table";
